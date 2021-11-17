@@ -1,14 +1,11 @@
 import nltk
-from nltk.corpus import wordnet as wn
 from nltk.stem.wordnet import WordNetLemmatizer
-
 from flask import Flask, jsonify, request
-from flask_cors import CORS, cross_origin
-
+from flask_cors import CORS
 import pickle
 import pandas as pd
 import numpy as np
-import tensorflow as tf
+import json
 
 # initialize flask server
 app = Flask(__name__)
@@ -18,6 +15,9 @@ CORS(app)
 data = pickle.load( open( "chatbot-data.pkl", "rb" ) )
 words = data['words']
 classes = data['classes']
+
+# Load intents data
+intents =  json.load(open('intents.json'))['intents']
 
 #load model
 with open(f'chatbot-model.pkl', 'rb') as f:
@@ -32,7 +32,7 @@ def get_words_from_input_sentence(sentence):
     sentence_words = [lemma_function.lemmatize(word.lower()) for word in sentence_words]
     return sentence_words
 
-def get_input_as_bag_of_words(sentence, words, show_details=True):
+def get_input_as_bag_of_words(sentence, words, show_details=False):
     sentence_words = get_words_from_input_sentence(sentence)
     bag = [0]*len(words)  
     for s in sentence_words:
@@ -48,7 +48,6 @@ def get_input_as_bag_of_words(sentence, words, show_details=True):
 # function to classify input sentence
 def classify_input(sentence):
     ERROR_THRESHOLD = 0.25
-    
     input_data = pd.DataFrame([get_input_as_bag_of_words(sentence, words)], dtype=float, index=['input'])
     results = model.predict([input_data])[0]
     # filter out predictions below a threshold, and provide intent index
@@ -57,8 +56,14 @@ def classify_input(sentence):
     results.sort(key=lambda x: x[1], reverse=True)
     return_list = []
     for r in results:
-        return_list.append((classes[r[0]], str(r[1])))
-    # return tuple of intent and probability
+        response = None
+        context = None
+        for intent in intents:
+            if intent['tag'] == classes[r[0]]:
+                response = intent['responses']
+                context = intent['context']
+
+        return_list.append({'tag': classes[r[0]], 'probability': str(r[1]), 'response': response, 'context': context})
     
     return return_list
 
