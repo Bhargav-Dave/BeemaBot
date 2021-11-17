@@ -8,7 +8,7 @@ Original file is located at
 """
 
 import nltk
-nltk.download('wordnet')
+# nltk.download('wordnet')
 from nltk.corpus import wordnet as wn
 from nltk.stem.wordnet import WordNetLemmatizer
 import numpy as np
