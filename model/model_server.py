@@ -70,7 +70,17 @@ def classify_input(sentence):
 @app.route("/chatbot/classify", methods=['POST'])
 def classify():
     sentence = request.json['sentence']
+    context = request.json['context'] if 'context' in request.json else None
     # get prediction from model
+    print(context)
+    if context:
+        for intent in intents:
+            if intent['tag'] == context:
+                return jsonify({
+                    'tag': intent['tag'],
+                    'response': intent['responses'],
+                    'context': context
+                })
     model_output = classify_input(sentence)
     response = jsonify(model_output)
     return response
