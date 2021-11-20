@@ -32,7 +32,7 @@ def get_words_from_input_sentence(sentence):
     sentence_words = [lemma_function.lemmatize(word.lower()) for word in sentence_words]
     return sentence_words
 
-def get_input_as_bag_of_words(sentence, words, show_details=False):
+def get_input_vector(sentence, words, show_details=False):
     sentence_words = get_words_from_input_sentence(sentence)
     bag = [0]*len(words)  
     for s in sentence_words:
@@ -47,10 +47,8 @@ def get_input_as_bag_of_words(sentence, words, show_details=False):
 
 # function to classify input sentence
 def classify_input(sentence):
-    ERROR_THRESHOLD = 0.25
-    input_data = pd.DataFrame([get_input_as_bag_of_words(sentence, words)], dtype=float, index=['input'])
+    input_data = pd.DataFrame([get_input_vector(sentence, words)], dtype=float, index=['input'])
     results = model.predict([input_data])[0]
-    # filter out predictions below a threshold, and provide intent index
     results = [[i,r] for i,r in enumerate(results)]
     # sort by strength of probability
     results.sort(key=lambda x: x[1], reverse=True)
