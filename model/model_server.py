@@ -17,7 +17,7 @@ words = data['words']
 classes = data['classes']
 
 # Load intents data
-intents =  json.load(open('intents.json'))['intents']
+intents =  json.load(open('intents 2.json'))['intents']
 
 #load model
 with open(f'chatbot-model.pkl', 'rb') as f:
@@ -51,7 +51,7 @@ def classify_input(sentence):
     input_data = pd.DataFrame([get_input_as_bag_of_words(sentence, words)], dtype=float, index=['input'])
     results = model.predict([input_data])[0]
     # filter out predictions below a threshold, and provide intent index
-    results = [[i,r] for i,r in enumerate(results) if r>ERROR_THRESHOLD]
+    results = [[i,r] for i,r in enumerate(results)]
     # sort by strength of probability
     results.sort(key=lambda x: x[1], reverse=True)
     return_list = []
