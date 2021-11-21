@@ -52,7 +52,7 @@ $(window).on("keydown", function (e) {
   }
 });
 
-const Reponses = {
+const Responses = {
   INFO_ADD_HOUSE: "Here are the few steps to add your house to insurance",
   INFO_ADD_REMOVE_INSURED: "Sure, We'll help you to remove insurace policy",
   INFO_ADD_REMOVE_VEHICLE:
@@ -295,14 +295,15 @@ function fakeMessage(query) {
   updateScrollbar();
 
   axios
-    .post("http://e647-123-201-24-50.ngrok.io/chatbot/classify", {
+    .post("http://077f-123-201-24-50.ngrok.io/chatbot/classify", {
       sentence: query,
     })
     .then(function ({ data }) {
       $(".message.loading").remove();
       $(
         '<div class="message new"><figure class="avatar"><img src="./modiji.jpg" /></figure>' +
-          Reponses?.[data[0].tag] || data[0].tag + "</div>"
+          Responses[data[0].tag] +
+          "</div>"
       )
         .appendTo($(".mCSB_container"))
         .addClass("new");
