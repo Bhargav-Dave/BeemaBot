@@ -1,4 +1,4 @@
-Code for ML Project
+BeemaBot is an interactive bot that takes prompts from the user regarding insurance policies and responds accordingly. This project was developed by us as a part of our Machine Learning Coursework.
 
 Run `ml_model.py` in model folder
 
